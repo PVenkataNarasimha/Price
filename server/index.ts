@@ -53,7 +53,7 @@ app.post('/api/prices', async (req, res) => {
     const updatedPrice = await Price.findOneAndUpdate(
       { date },
       { date, district, broiler, skin, skinless },
-      { new: true, upsert: true }
+      { returnDocument: 'after', upsert: true }
     );
     res.status(200).json(updatedPrice);
   } catch (error: any) {
@@ -64,7 +64,7 @@ app.post('/api/prices', async (req, res) => {
 app.put('/api/prices/:id', async (req, res) => {
   try {
     const { date, district, broiler, skin, skinless } = req.body;
-    const updatedPrice = await Price.findByIdAndUpdate(req.params.id, { date, district, broiler, skin, skinless }, { new: true });
+    const updatedPrice = await Price.findByIdAndUpdate(req.params.id, { date, district, broiler, skin, skinless }, { returnDocument: 'after' });
     res.json(updatedPrice);
   } catch (error: any) {
     res.status(500).json({ message: 'Server error' });
