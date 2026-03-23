@@ -33,12 +33,17 @@ const UserSchema = new mongoose.Schema({
 const User = mongoose.model('User', UserSchema);
 
 // Routes
+app.get('/', (req, res) => {
+  res.send('Chicken Price API is Running...');
+});
+
 app.get('/api/prices', async (req, res) => {
   try {
     const prices = await Price.find();
     res.json(prices);
   } catch (error: any) {
-    res.status(500).json({ message: 'Server error' });
+    console.error('Fetch Prices Error:', error);
+    res.status(500).json({ message: 'Server error', error: error.message });
   }
 });
 
