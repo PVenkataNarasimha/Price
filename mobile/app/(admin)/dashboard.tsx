@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, Platform, Image, ScrollView,
 import axios from 'axios';
 import { Stack, useRouter } from 'expo-router';
 
-const API_URL = 'https://price-6k5m.onrender.com/api';
+import { API_URL } from '../../constants/API';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -12,6 +12,9 @@ export default function AdminDashboard() {
   const [itemId, setItemId] = useState<string | null>(null);
 
   const [date, setDate] = useState('');
+  const [pickerDate, setPickerDate] = useState(new Date());
+  const [showPicker, setShowPicker] = useState(false);
+
   const [district, setDistrict] = useState('Guntur District');
   const [broiler, setBroiler] = useState<string[]>(['', '', '']);
   const [skin, setSkin] = useState('');
@@ -27,7 +30,18 @@ export default function AdminDashboard() {
       if (resp.data && resp.data.length > 0) {
         const item = resp.data[0];
         setItemId(item._id);
-        setDate(item.date || '');
+        const dateStr = item.date || '';
+        setDate(dateStr);
+
+        // Try to parse existing date for the picker
+        if (dateStr) {
+          const parts = dateStr.split('/');
+          if (parts.length === 3) {
+            const d = new Date(parseInt(parts[2]), parseInt(parts[1]) - 1, parseInt(parts[0]));
+            if (!isNaN(d.getTime())) setPickerDate(d);
+          }
+        }
+
         setDistrict(item.district || 'Guntur District');
         setBroiler(item.broiler?.map(String) || ['', '', '']);
         setSkin(item.skin?.toString() || '');
@@ -40,9 +54,20 @@ export default function AdminDashboard() {
     }
   };
 
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowPicker(Platform.OS === 'ios'); // iOS stays open
+    if (selectedDate) {
+      setPickerDate(selectedDate);
+      const day = selectedDate.getDate().toString().padStart(2, '0');
+      const month = (selectedDate.getMonth() + 1).toString().padStart(2, '0');
+      const year = selectedDate.getFullYear();
+      setDate(`${day}/${month}/${year}`);
+    }
+  };
+
   const handleSave = async () => {
     if (!date) {
-      Alert.alert('Error', 'Please enter a Date');
+      Alert.alert('Error', 'Please select a Date');
       return;
     }
     setSaving(true);
@@ -69,12 +94,12 @@ export default function AdminDashboard() {
     setBroiler(newBroiler);
   };
 
-  if (loading) return <ActivityIndicator style={{marginTop: 50}} />;
+  if (loading) return <ActivityIndicator style={{ marginTop: 50 }} />;
 
   return (
     <ScrollView style={styles.container}>
       <Stack.Screen options={{
-        title: 'Price - Admin',
+        title: 'Market Price - Admin',
         headerStyle: { backgroundColor: '#F44336' },
         headerTintColor: '#fff',
         headerTitleStyle: { fontSize: 20 },
@@ -82,13 +107,45 @@ export default function AdminDashboard() {
 
       <View style={styles.dateRow}>
         <Text style={styles.dateLabel}>Date : </Text>
-        <TextInput 
-          style={styles.dateInput}
-          value={date}
-          onChangeText={setDate}
-          placeholder="e.g. 22/3/2026"
-        />
+        {Platform.OS === 'web' ? (
+          <input
+            type="date"
+            value={pickerDate.toISOString().split('T')[0]}
+            onChange={(e) => {
+              const d = new Date(e.target.value);
+              handleDateChange({}, d);
+            }}
+            style={{
+              padding: '5px',
+              border: '1px solid #ccc',
+              borderRadius: '4px',
+              fontSize: '16px'
+            }}
+          />
+        ) : (
+          <TouchableOpacity
+            style={styles.datePickerButton}
+            onPress={() => setShowPicker(true)}
+          >
+            <Text style={styles.dateInput}>{date || 'Select Date'}</Text>
+          </TouchableOpacity>
+        )}
       </View>
+
+      {showPicker && Platform.OS !== 'web' && (
+        (() => {
+          const DateTimePicker = require('@react-native-community/datetimepicker').default;
+          return (
+            <DateTimePicker
+              value={pickerDate}
+              mode="date"
+              display="default"
+              onChange={handleDateChange}
+            />
+          );
+        })()
+      )}
+
 
       <View style={styles.districtContainer}>
         <View style={styles.districtHeader}>
@@ -99,7 +156,7 @@ export default function AdminDashboard() {
           <Text style={styles.label}>Broiler Price</Text>
           <View style={styles.boxesContainer}>
             {[0, 1, 2].map((index) => (
-              <TextInput 
+              <TextInput
                 key={index}
                 style={styles.priceInput}
                 value={broiler[index]}
@@ -113,7 +170,7 @@ export default function AdminDashboard() {
         <View style={styles.row}>
           <Text style={styles.label}>Skin Chicken</Text>
           <View style={styles.boxesContainer}>
-            <TextInput 
+            <TextInput
               style={styles.priceInput}
               value={skin}
               onChangeText={setSkin}
@@ -125,7 +182,7 @@ export default function AdminDashboard() {
         <View style={styles.row}>
           <Text style={styles.label}>Skinless Chicken</Text>
           <View style={styles.boxesContainer}>
-            <TextInput 
+            <TextInput
               style={styles.priceInput}
               value={skinless}
               onChangeText={setSkinless}
@@ -135,9 +192,9 @@ export default function AdminDashboard() {
         </View>
       </View>
 
-      <TouchableOpacity 
-        style={styles.saveButton} 
-        onPress={handleSave} 
+      <TouchableOpacity
+        style={styles.saveButton}
+        onPress={handleSave}
         disabled={saving}
       >
         <Text style={styles.saveButtonText}>
@@ -145,18 +202,18 @@ export default function AdminDashboard() {
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={styles.manageButton} 
-        onPress={() => router.push('/(admin)/history' as any)} 
+      <TouchableOpacity
+        style={styles.manageButton}
+        onPress={() => router.push('/(admin)/history' as any)}
       >
         <Text style={styles.manageButtonText}>
           MANAGE PAST PRICES
         </Text>
       </TouchableOpacity>
 
-      <TouchableOpacity 
-        style={[styles.manageButton, { backgroundColor: '#B71C1C' }]} 
-        onPress={() => router.push('/(admin)/feedback')} 
+      <TouchableOpacity
+        style={[styles.manageButton, { backgroundColor: '#B71C1C' }]}
+        onPress={() => router.push('/(admin)/feedback')}
       >
         <Text style={styles.manageButtonText}>
           VIEW USER FEEDBACK
@@ -188,24 +245,27 @@ const styles = StyleSheet.create({
     color: '#666',
     fontWeight: '500',
   },
+  datePickerButton: {
+    backgroundColor: '#FFF',
+    paddingVertical: 8,
+    paddingHorizontal: 12,
+    borderRadius: 5,
+    borderWidth: 1,
+    borderColor: '#CCC',
+    minWidth: 150,
+  },
   dateInput: {
     fontSize: 16,
     color: '#333',
     fontWeight: '500',
-    borderBottomWidth: 1,
-    borderBottomColor: '#CCC',
-    minWidth: 100,
-    paddingVertical: 2,
+    textAlign: 'center',
   },
   districtContainer: {
     backgroundColor: '#FFF',
     borderRadius: 5,
     overflow: 'hidden',
+    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.2)',
     elevation: 3,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
     marginBottom: 20,
   },
   districtHeader: {
@@ -258,12 +318,9 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    boxShadow: '0px 2px 3px rgba(0, 0, 0, 0.2)',
     elevation: 2,
     marginTop: 10,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
   },
   saveButtonText: {
     color: '#FFF',
@@ -277,12 +334,10 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    boxShadow: '0px 2px 3px rgba(0, 0, 0, 0.2)',
     elevation: 2,
     marginTop: 15,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.2,
-    shadowRadius: 3,
+
   },
   manageButtonText: {
     color: '#FFF',
@@ -298,6 +353,7 @@ const styles = StyleSheet.create({
   chickenImage: {
     width: 200,
     height: 200,
+    borderRadius: 40,
   },
   footerText: {
     color: '#F44336',

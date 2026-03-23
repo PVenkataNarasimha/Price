@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, Platform, Image, ScrollView 
 import axios from 'axios';
 import { Stack, useLocalSearchParams } from 'expo-router';
 
-const API_URL = 'https://price-6k5m.onrender.com/api';
+import { API_URL } from '../../constants/API';
 
 export default function UserPrices() {
   const [data, setData] = useState<any>(null);
@@ -111,11 +111,8 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFF',
     borderRadius: 5,
     overflow: 'hidden',
+    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.2)',
     elevation: 3, // Android shadow
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.2,
-    shadowRadius: 2,
     marginBottom: 20,
   },
   districtHeader: {
@@ -172,6 +169,7 @@ const styles = StyleSheet.create({
   chickenImage: {
     width: 200,
     height: 200,
+    borderRadius: 40,
   },
   footerText: {
     color: '#F44336',

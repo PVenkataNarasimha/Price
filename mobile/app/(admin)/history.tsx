@@ -3,11 +3,12 @@ import { View, Text, StyleSheet, ActivityIndicator, Platform, Alert, TouchableOp
 import axios from 'axios';
 import { Stack, useRouter } from 'expo-router';
 
-const API_URL = 'https://price-6k5m.onrender.com/api';
+import { API_URL } from '../../constants/API';
 
 export default function AdminHistory() {
   const [prices, setPrices] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
+  const [expandedId, setExpandedId] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPrices();
@@ -75,19 +76,42 @@ export default function AdminHistory() {
           keyExtractor={item => item._id}
           contentContainerStyle={{ padding: 15 }}
           renderItem={({ item }) => (
-            <View style={styles.card}>
-              <View style={styles.cardText}>
-                <Text style={styles.dateText}>{item.date}</Text>
-                <Text style={styles.districtText}>{item.district}</Text>
+            <TouchableOpacity 
+              style={styles.card} 
+              onPress={() => setExpandedId(expandedId === item._id ? null : item._id)}
+              activeOpacity={0.7}
+            >
+              <View style={styles.cardHeader}>
+                <View style={styles.cardText}>
+                  <Text style={styles.dateText}>{item.date}</Text>
+                  <Text style={styles.districtText}>{item.district}</Text>
+                </View>
+                
+                <TouchableOpacity 
+                  style={styles.deleteButton} 
+                  onPress={() => confirmDelete(item._id, item.date)}
+                >
+                  <Text style={styles.deleteButtonText}>DELETE</Text>
+                </TouchableOpacity>
               </View>
-              
-              <TouchableOpacity 
-                style={styles.deleteButton} 
-                onPress={() => confirmDelete(item._id, item.date)}
-              >
-                <Text style={styles.deleteButtonText}>DELETE</Text>
-              </TouchableOpacity>
-            </View>
+
+              {expandedId === item._id && (
+                <View style={styles.detailsContainer}>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Broiler Price:</Text>
+                    <Text style={styles.detailValue}>{item.broiler?.join(', ') || 'N/A'}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Skin Chicken:</Text>
+                    <Text style={styles.detailValue}>{item.skin || 'N/A'}</Text>
+                  </View>
+                  <View style={styles.detailRow}>
+                    <Text style={styles.detailLabel}>Skinless Chicken:</Text>
+                    <Text style={styles.detailValue}>{item.skinless || 'N/A'}</Text>
+                  </View>
+                </View>
+              )}
+            </TouchableOpacity>
           )}
         />
       )}
@@ -101,18 +125,17 @@ const styles = StyleSheet.create({
     backgroundColor: '#FAF9F6', 
   },
   card: {
-    flexDirection: 'row',
     backgroundColor: '#FFF',
     padding: 15,
     marginBottom: 15,
     borderRadius: 4,
-    elevation: 2, 
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
+    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.15)',
+    elevation: 2,
     borderWidth: 1,
     borderColor: '#EEE',
+  },
+  cardHeader: {
+    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
   },
@@ -140,5 +163,26 @@ const styles = StyleSheet.create({
     color: '#FFF',
     fontWeight: 'bold',
     fontSize: 14,
+  },
+  detailsContainer: {
+    marginTop: 15,
+    paddingTop: 15,
+    borderTopWidth: 1,
+    borderTopColor: '#EEE',
+  },
+  detailRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 8,
+  },
+  detailLabel: {
+    fontSize: 16,
+    color: '#666',
+    fontWeight: '500',
+  },
+  detailValue: {
+    fontSize: 16,
+    color: '#333',
+    fontWeight: 'bold',
   }
 });

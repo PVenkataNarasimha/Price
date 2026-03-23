@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Stack } from 'expo-router';
 import axios from 'axios';
 
-const API_URL = 'https://price-6k5m.onrender.com/api'; 
+import { API_URL } from '../../constants/API';
 
 // Redirection is handled globally by AuthContext.tsx useEffect
 export default function Login() {
@@ -43,6 +43,7 @@ export default function Login() {
         <TextInput 
           style={styles.input} 
           placeholder="Username" 
+          placeholderTextColor="#999"
           value={username} 
           onChangeText={setUsername} 
           autoCapitalize="none" 
@@ -50,6 +51,7 @@ export default function Login() {
         <TextInput 
           style={styles.input} 
           placeholder="Password" 
+          placeholderTextColor="#999"
           secureTextEntry 
           value={password} 
           onChangeText={setPassword} 
@@ -66,8 +68,8 @@ export default function Login() {
 const styles = StyleSheet.create({
   container: { flex: 1, justifyContent: 'center', padding: 20, backgroundColor: '#FAF9F6' },
   title: { fontSize: 24, fontWeight: 'bold', marginBottom: 30, textAlign: 'center', color: '#F44336' },
-  card: { backgroundColor: '#FFF', padding: 20, borderRadius: 8, elevation: 3, shadowColor: '#000', shadowOpacity: 0.1, shadowOffset: {width: 0, height: 2}, shadowRadius: 4 },
-  input: { borderWidth: 1, borderColor: '#ccc', padding: 12, marginBottom: 15, borderRadius: 5, fontSize: 16 },
+  card: { backgroundColor: '#FFF', padding: 20, borderRadius: 8, elevation: 3, boxShadow: '0px 2px 4px rgba(0, 0, 0, 0.1)' },
+  input: { borderWidth: 1, borderColor: '#ccc', padding: 12, marginBottom: 15, borderRadius: 5, fontSize: 16, color: '#000' },
   loginButton: { backgroundColor: '#F44336', paddingVertical: 15, borderRadius: 30, alignItems: 'center', marginTop: 10 },
   loginButtonText: { color: '#FFF', fontWeight: 'bold', fontSize: 16 }
 });

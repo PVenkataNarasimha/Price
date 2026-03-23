@@ -1,5 +1,6 @@
 import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, BackHandler, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ScrollView, Platform, BackHandler, Share } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { Stack, useRouter } from 'expo-router';
 import { useAuth } from '../../context/AuthContext';
 
@@ -15,13 +16,33 @@ export default function UserMenu() {
     }
   };
 
+  const handleShare = async () => {
+    try {
+      const result = await Share.share({
+        message: 'Check out the daily chicken prices on the Price App! 🍗 Get the latest rates for Broiler, Skin, and Skinless chicken anytime.\n\n Still working on it Thankyou for your patience.',
+        title: 'Share Price App',
+      });
+      if (result.action === Share.sharedAction) {
+        if (result.activityType) {
+          // shared with activity type of result.activityType
+        } else {
+          // shared
+        }
+      } else if (result.action === Share.dismissedAction) {
+        // dismissed
+      }
+    } catch (error: any) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <SafeAreaView style={styles.safeArea}>
       <Stack.Screen options={{ headerShown: false }} />
       <View style={styles.container}>
         {/* Red Header Bar */}
         <View style={styles.header}>
-          <Text style={styles.headerTitle}>Price</Text>
+          <Text style={styles.headerTitle}>Market Price</Text>
         </View>
 
         {/* Green Update Bar */}
@@ -33,33 +54,33 @@ export default function UserMenu() {
 
         {/* Scrollable Menu Items */}
         <ScrollView contentContainerStyle={styles.scrollContainer} showsVerticalScrollIndicator={false}>
-          <MenuButton 
-            title="TODAY'S BROILER CHICKEN PRICES" 
-            onPress={() => router.push('/(user)/prices')} 
+          <MenuButton
+            title="TODAY'S BROILER CHICKEN PRICES"
+            onPress={() => router.push('/(user)/prices')}
           />
-          <MenuButton 
-            title="CHECK RECENT PRICES" 
-            onPress={() => router.push('/(user)/recent' as any)} 
+          <MenuButton
+            title="CHECK RECENT PRICES"
+            onPress={() => router.push('/(user)/recent' as any)}
           />
-          <MenuButton 
-            title="USER GUIDE" 
-            onPress={() => router.push('/(user)/guide')} 
+          <MenuButton
+            title="USER GUIDE"
+            onPress={() => router.push('/(user)/guide')}
           />
-          <MenuButton 
-            title="FEEDBACK" 
-            onPress={() => router.push('/(user)/feedback')} 
+          <MenuButton
+            title="FEEDBACK"
+            onPress={() => router.push('/(user)/feedback')}
           />
-          <MenuButton 
-            title="SHARE OUR APP" 
-            onPress={() => {}} 
+          <MenuButton
+            title="SHARE OUR APP"
+            onPress={handleShare}
           />
-          <MenuButton 
-            title="LOGOUT" 
-            onPress={signOut} 
+          <MenuButton
+            title="LOGOUT"
+            onPress={signOut}
           />
-          <MenuButton 
-            title="EXIT" 
-            onPress={handleExit} 
+          <MenuButton
+            title="EXIT"
+            onPress={handleExit}
           />
         </ScrollView>
       </View>
@@ -126,10 +147,7 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     alignItems: 'center',
     justifyContent: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.15,
-    shadowRadius: 3.5,
+    boxShadow: '0px 2px 3.5px rgba(0, 0, 0, 0.15)',
     elevation: 4, // For Android
   },
   buttonText: {

@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, Platform, Image, TouchableOp
 import axios from 'axios';
 import { Stack, useRouter } from 'expo-router';
 
-const API_URL = 'https://price-6k5m.onrender.com/api';
+import { API_URL } from '../../constants/API';
 
 export default function RecentPrices() {
   const [prices, setPrices] = useState<any[]>([]);
@@ -36,7 +36,6 @@ export default function RecentPrices() {
         headerTintColor: '#fff',
         headerTitleStyle: { fontSize: 20 },
       }} />
-
       <FlatList
         data={prices}
         keyExtractor={item => item._id}
@@ -47,7 +46,7 @@ export default function RecentPrices() {
             activeOpacity={0.7}
             onPress={() => router.push({ pathname: '/(user)/prices', params: { id: item._id } })}
           >
-            <Image source={require('../../assets/images/chicken.png')} style={styles.thumbnail} resizeMode="contain" />
+            <Image source={require('../../assets/images/poultry_header.png')} style={styles.thumbnail} resizeMode="contain" />
             <View style={styles.cardText}>
               <Text style={styles.dateText}>{item.date}</Text>
               <Text style={styles.districtText}>{item.district}</Text>
@@ -70,11 +69,8 @@ const styles = StyleSheet.create({
     padding: 10,
     marginBottom: 15,
     borderRadius: 4,
+    boxShadow: '0px 1px 2px rgba(0, 0, 0, 0.15)',
     elevation: 2, // shadow for android
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.15,
-    shadowRadius: 2,
     borderWidth: 1,
     borderColor: '#EEE',
     alignItems: 'center',
@@ -82,8 +78,8 @@ const styles = StyleSheet.create({
   thumbnail: {
     width: 60,
     height: 60,
-    borderRadius: 4,
     backgroundColor: '#F44336', // matches their red icon background
+    borderRadius: 10,
   },
   cardText: {
     marginLeft: 15,
@@ -98,5 +94,18 @@ const styles = StyleSheet.create({
   districtText: {
     fontSize: 14,
     color: '#777',
+  },
+  headerImageContainer: {
+    height: 180,
+    backgroundColor: '#F44336',
+    borderBottomLeftRadius: 30,
+    borderBottomRightRadius: 30,
+    justifyContent: 'center',
+    alignItems: 'center',
+    paddingBottom: 10,
+  },
+  headerImage: {
+    width: '100%',
+    height: '90%',
   }
 });
