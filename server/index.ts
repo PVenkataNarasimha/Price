@@ -22,7 +22,7 @@ const PriceSchema = new mongoose.Schema({
   broiler: { type: [Number], required: true },
   skin: { type: Number, required: true },
   skinless: { type: Number, required: true }
-});
+}, { timestamps: true });
 const Price = mongoose.model('Price', PriceSchema);
 
 const UserSchema = new mongoose.Schema({
@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 
 app.get('/api/prices', async (req, res) => {
   try {
-    const prices = await Price.find();
+    const prices = await Price.find().sort({ createdAt: -1 });
     res.json(prices);
   } catch (error: any) {
     console.error('Fetch Prices Error:', error);
