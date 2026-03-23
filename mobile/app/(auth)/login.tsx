@@ -4,7 +4,7 @@ import { useAuth } from '../../context/AuthContext';
 import { Stack } from 'expo-router';
 import axios from 'axios';
 
-const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : 'http://localhost:5000/api'; 
+const API_URL = 'https://price-6k5m.onrender.com/api'; 
 
 // Redirection is handled globally by AuthContext.tsx useEffect
 export default function Login() {

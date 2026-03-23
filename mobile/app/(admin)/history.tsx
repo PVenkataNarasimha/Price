@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, ActivityIndicator, Platform, Alert, TouchableOp
 import axios from 'axios';
 import { Stack, useRouter } from 'expo-router';
 
-const API_URL = Platform.OS === 'android' ? 'http://10.0.2.2:5000/api' : 'http://localhost:5000/api';
+const API_URL = 'https://price-6k5m.onrender.com/api';
 
 export default function AdminHistory() {
   const [prices, setPrices] = useState<any[]>([]);
