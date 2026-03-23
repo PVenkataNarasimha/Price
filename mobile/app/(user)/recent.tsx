@@ -46,7 +46,7 @@ export default function RecentPrices() {
             activeOpacity={0.7}
             onPress={() => router.push({ pathname: '/(user)/prices', params: { id: item._id } })}
           >
-            <Image source={require('../../assets/images/poultry_header.png')} style={styles.thumbnail} resizeMode="contain" />
+            <Image source={require('../../assets/images/logo.png')} style={styles.thumbnail} resizeMode="contain" />
             <View style={styles.cardText}>
               <Text style={styles.dateText}>{item.date}</Text>
               <Text style={styles.districtText}>{item.district}</Text>

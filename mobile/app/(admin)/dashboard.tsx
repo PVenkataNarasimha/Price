@@ -222,7 +222,7 @@ export default function AdminDashboard() {
 
       {/* Footer Image */}
       <View style={styles.footer}>
-        <Image source={require('../../assets/images/chicken.png')} style={styles.chickenImage} resizeMode="contain" />
+        <Image source={require('../../assets/images/logo.png')} style={styles.chickenImage} resizeMode="contain" />
         <Text style={styles.footerText}>Price</Text>
       </View>
     </ScrollView>

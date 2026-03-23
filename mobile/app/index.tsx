@@ -17,7 +17,7 @@ export default function Index() {
           <Text style={styles.headerTitle}>Market Price</Text>
         </View>
 
-        <Image source={require('../assets/images/chicken.png')} style={styles.headerImage} resizeMode="contain" />
+        <Image source={require('../assets/images/logo.png')} style={styles.headerImage} resizeMode="contain" />
         {/* Branding Section */}
         <View style={styles.content}>
           <View style={styles.card}>
