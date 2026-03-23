@@ -39,7 +39,7 @@ app.get('/', (req, res) => {
 
 app.get('/api/prices', async (req, res) => {
   try {
-    const prices = await Price.find().sort({ createdAt: -1 });
+    const prices = await Price.find().sort({ updatedAt: -1 });
     res.json(prices);
   } catch (error: any) {
     console.error('Fetch Prices Error:', error);
