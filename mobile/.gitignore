@@ -41,3 +41,8 @@ app-example
 # generated native folders
 /ios
 /android
+
+# Google Search/EAS Keys
+market-price*.json
+api-*.json
+service-account-*.json
