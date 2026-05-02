@@ -28,7 +28,14 @@ export default function AdminDashboard() {
     try {
       const resp = await axios.get(`${API_URL}/prices`);
       if (resp.data && resp.data.length > 0) {
-        const item = resp.data[0];
+        const sortedPrices = [...resp.data].sort((a: any, b: any) => {
+          const [dayA, monthA, yearA] = (a.date || '').split('/');
+          const [dayB, monthB, yearB] = (b.date || '').split('/');
+          const dateA = new Date(Number(yearA), Number(monthA) - 1, Number(dayA)).getTime();
+          const dateB = new Date(Number(yearB), Number(monthB) - 1, Number(dayB)).getTime();
+          return dateB - dateA;
+        });
+        const item = sortedPrices[0];
         setItemId(item._id);
         const dateStr = item.date || '';
         setDate(dateStr);

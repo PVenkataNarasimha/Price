@@ -38,7 +38,8 @@
           }
         }
       ],
-      "@react-native-community/datetimepicker"
+      "@react-native-community/datetimepicker",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true,
@@ -49,6 +50,12 @@
       "eas": {
         "projectId": "1c9bfdea-6ba2-46a1-9688-1e08aa980a71"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/1c9bfdea-6ba2-46a1-9688-1e08aa980a71"
     }
   }
 }

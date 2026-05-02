@@ -17,8 +17,14 @@ export default function AdminHistory() {
   const fetchPrices = async () => {
     try {
       const resp = await axios.get(`${API_URL}/prices`);
-      const reversed = [...(resp.data || [])].reverse();
-      setPrices(reversed);
+      const sortedPrices = [...(resp.data || [])].sort((a: any, b: any) => {
+        const [dayA, monthA, yearA] = (a.date || '').split('/');
+        const [dayB, monthB, yearB] = (b.date || '').split('/');
+        const dateA = new Date(Number(yearA), Number(monthA) - 1, Number(dayA)).getTime();
+        const dateB = new Date(Number(yearB), Number(monthB) - 1, Number(dayB)).getTime();
+        return dateB - dateA;
+      });
+      setPrices(sortedPrices);
     } catch (e) {
       console.log(e);
     } finally {
